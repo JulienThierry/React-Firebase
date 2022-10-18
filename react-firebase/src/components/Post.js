@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Post = ({ data, user }) => {
+    const [edit, setEdit] = useState(false);
+    const [editMess, setEditMess] = useState(null);
 
     const dateFormater = (date => {
         let newDate = Math.floor((new Date() - new Date(date)) / (1000 * 3600 * 24));
@@ -25,12 +27,21 @@ const Post = ({ data, user }) => {
                 </div>
                 {data.authorId === user?.uid && (
                     <div className="right-part">
-                        <span><i className="fa-solid fa-pen-to-square"></i></span>
+                        <span onClick={() => setEdit(!edit)}><i className="fa-solid fa-pen-to-square"></i></span>
                         <span>DELETE</span>
                     </div>
                 )}
             </div>
-            <p>{data.message}</p>
+            {edit ? (
+                <>
+                    <textarea autoFocus
+                        value={editMess ? editMess : data.message}
+                        onChange={(e) => setEditMess(e.target.value)}></textarea>
+                    <button className='edit-btn' onClick={() => setEdit(false)}>Modifier message</button>
+                </>
+            ) : <p>{editMess ? editMess : data.message}</p>}
+
+
         </div>
     );
 };
