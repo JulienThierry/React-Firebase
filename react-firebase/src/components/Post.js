@@ -1,6 +1,7 @@
 import { doc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { db } from '../utils/firebase.config';
+import CommentPost from './CommentPost';
 import Delete from './Delete';
 
 const Post = ({ data, user }) => {
@@ -50,6 +51,7 @@ const Post = ({ data, user }) => {
                     <button className='edit-btn' onClick={() => handleEdit()}>Modifier message</button>
                 </>
             ) : <p>{editMess ? editMess : data.message}</p>}
+            <CommentPost post={data} />
 
 
         </div>
