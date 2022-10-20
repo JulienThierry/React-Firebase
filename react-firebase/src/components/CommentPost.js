@@ -2,6 +2,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import React, { useRef, useState } from 'react';
 import { auth, db } from '../utils/firebase.config';
+import CommentCard from './CommentCard';
 
 const CommentPost = ({ post }) => {
 
@@ -11,12 +12,25 @@ const CommentPost = ({ post }) => {
     const handleComment = (e) => {
         e.preventDefault();
 
-        let data = [
-            {
-                commentAuthor: user.displayName,
-                text: anwserContent.current.value,
-            },
-        ];
+        let data = []
+
+        if (post.comments === null) {
+            data = [
+                {
+                    commentAuthor: user.displayName,
+                    text: anwserContent.current.value,
+                }
+            ];
+        } else {
+            data = [
+                ...post.comments,
+                {
+                    commentAuthor: user.displayName,
+                    text: anwserContent.current.value,
+                }
+            ]
+        }
+
 
         updateDoc(doc(db, "posts", post.id), { comments: data })
         anwserContent.current.value = "";
@@ -29,7 +43,9 @@ const CommentPost = ({ post }) => {
     return (
         <div className="comment-container">
             <h5 className="comment-title">Commentaires</h5>
-            {/* Map */}
+            {post.comments && post.comments.map((comment, index) =>
+                <CommentCard key={index} comment={comment} />
+            )}
 
             {user ? (
                 <form onSubmit={(e) => handleComment(e)}>
